@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mbali Hair Salon</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #ffe6f0;
+            margin: 0;
+            scroll-behavior: smooth;
+        }
+
+        header {
+            background-color: #ff66b2;
+            color: white;
+            text-align: center;
+            padding: 20px 10px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        /* NAVIGATION */
+        .nav {
+            margin-top: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .nav button {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 20px;
+            background-color: white;
+            color: #ff3385;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.3s;
+        }
+
+        .nav button:hover { background-color: #ffccdd; }
+
+        .nav-btn-img {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1px solid #ff3385;
+        }
+
+        .container {
+            width: 95%;
+            max-width: 1200px;
+            margin: 20px auto;
+        }
+
+        h2.category-title { 
+            color: #ff3385; 
+            text-align: left; 
+            margin-top: 30px;
+            border-bottom: 2px solid #ff66b2;
+            padding-bottom: 5px;
+            text-transform: uppercase;
+            font-size: 1.2rem;
+        }
+
+        /* HORIZONTAL SCROLLING LAYOUT */
+        .hair-styles-row {
+            display: flex;
+            overflow-x: auto;
+            gap: 15px;
+            padding: 10px 5px;
+            scrollbar-width: thin;
+            scrollbar-color: #ff66b2 #ffe6f0;
+        }
+
+        .hair-styles-row::-webkit-scrollbar {
+            height: 8px;
+        }
+        .hair-styles-row::-webkit-scrollbar-thumb {
+            background: #ff66b2;
+            border-radius: 10px;
+        }
+
+        .hair-style {
+            background: white;
+            padding: 10px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: 0.3s;
+            min-width: 160px;
+            flex-shrink: 0;
+        }
+
+        .hair-style img {
+            width: 100%;
+            height: 140px;
+            border-radius: 10px;
+            object-fit: cover;
+        }
+
+        /* SECTIONS */
+        .section-box {
+            display: none;
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-top: 20px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            max-width: 500px;
+            margin: 20px auto;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 8px;
+            border: 1px solid #ff99c2;
+            box-sizing: border-box;
+        }
+
+        #selectedStylesList {
+            text-align: left;
+            background: #fffafa;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border: 1px solid #ffccdd;
+        }
+
+        .style-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #ffe6f0;
+        }
+
+        .btn-main {
+            background: #ff3385;
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .btn-directions {
+            background: #4CAF50;
+            color: white;
+            text-decoration: none;
+            display: inline-block;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            margin-top: 15px;
+            transition: 0.3s;
+        }
+        .btn-directions:hover { background: #45a049; }
+
+        /* MODAL SYSTEM */
+        .modal {
+            display: none; 
+            position: fixed;
+            z-index: 2000; 
+            left: 0; top: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            overflow-y: auto;
+        }
+
+        .modal-content {
+            background: white;
+            margin: 5% auto;
+            padding: 25px;
+            width: 85%;
+            max-width: 500px;
+            border-radius: 15px;
+            text-align: center;
+            position: relative;
+        }
+
+        .modal-content img.about-img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #ff3385;
+            margin-bottom: 15px;
+        }
+
+        .duration-table {
+            width: 100%;
+            margin-top: 15px;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.9rem;
+        }
+
+        .duration-table th, .duration-table td {
+            padding: 8px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .duration-table th { color: #ff3385; }
+
+        .close-btn {
+            position: absolute;
+            right: 15px; top: 10px;
+            cursor: pointer;
+            font-size: 30px;
+            color: #ff3385;
+            font-weight: bold;
+        }
+
+        .contact {
+            background: white;
+            margin-top: 40px;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .social-links img { width: 35px; margin: 8px; }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>Mbali Hair Salon</h1>
+    <div class="nav">
+        <button onclick="showSection('homeSection')"><img src="Home.jpg" class="nav-btn-img"> Home</button>
+        <button onclick="showSection('bookingSection')"><img src="Book.png" class="nav-btn-img"> Book Appointment</button>
+        <button onclick="showSection('cancelSection')"><img src="Cancel.png" class="nav-btn-img"> Cancel Appointment</button>
+        <button onclick="openModal('aboutModal')"><img src="About us.png" class="nav-btn-img"> About Us</button>
+    </div>
+</header>
+
+<div class="container">
+
+    <div id="homeSection">
+        <div id="catalog-container"></div>
+    </div>
+
+    <div class="section-box" id="bookingSection">
+        <h2>Book Appointment</h2>
+        <select id="hairStyleDropdown"><option value="">-- Choose a Style --</option></select>
+        <button style="background:#ff99c2; color:white; border:none; padding:10px; border-radius:8px; width:100%; cursor:pointer;" onclick="addStyleFromDropdown()">+ Add Style</button>
+        
+        <div id="selectedStylesList"><p style="text-align:center; color:#999;">No styles added.</p></div>
+        
+        <input type="text" id="custName" placeholder="Full Name">
+        <input type="number" id="custPhone" placeholder="WhatsApp Number">
+        <input type="date" id="bookDate">
+        <input type="time" id="bookTime">
+        
+        <div style="font-size:1.4rem; color:#ff3385; font-weight:bold; margin:15px 0;">Total: R<span id="totalPrice">0</span></div>
+        <button class="btn-main" onclick="confirmFinalBooking()">Send to WhatsApp</button>
+    </div>
+
+    <div class="section-box" id="cancelSection">
+        <h2>Cancel Appointment</h2>
+        <input type="text" id="cancelRef" placeholder="Reference Number">
+        <button class="btn-main" style="background:#ff4d4d;" onclick="processCancellation()">Send Cancellation Request</button>
+    </div>
+
+    <div class="contact">
+        <h2>Contact Us</h2>
+        <p>Pretoria | <a href="tel:0794704299" style="color:#ff3385; font-weight:bold;">079 470 4299</a></p>
+        <div class="social-links">
+            <a href="https://www.facebook.com/mbally.king.98" target="_blank"><img src="Facebook.png"></a>
+            <a href="https://www.instagram.com/zieentler?" target="_blank"><img src="Instagram.jpg"></a>
+            <a href="https://www.tiktok.com/@ziee.ntler?" target="_blank"><img src="Tiktok.png"></a>
+        </div>
+    </div>
+</div>
+
+<div id="aboutModal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeModal('aboutModal')">×</span>
+        <img src="Mbali_Pic.jpeg" alt="Mbali" class="about-img">
+        <h2 style="color:#ff3385;">About Our Salon</h2>
+        <p>At Mbali Hair Salon, we specialize in high-quality hair braiding and styling tailored to your unique look. Professional service in a friendly, relaxing environment.</p>
+        
+        <h3 style="color:#ff3385; margin-top: 15px;">Service Durations</h3>
+        <table class="duration-table">
+            <tr><th>Style</th><th>Avg. Time</th></tr>
+            <tr><td>Freehand</td><td>1 - 1.5 Hours</td></tr>
+            <tr><td>Carrot Braids</td><td>2 - 3 Hours</td></tr>
+            <tr><td>Knotless Braids</td><td>3 - 5 Hours</td></tr>
+            <tr><td>Locks & Twists</td><td>2.5 - 4 Hours</td></tr>
+        </table>
+        
+        <p style="margin-top: 20px;"><strong>Location:</strong> Black Tern St, Hatherley 331-Jr, Pretoria.</p>
+        
+        <a href="https://www.google.com/maps/search/?api=1&query=Black+Tern+St,+Hatherley+331-Jr,+Pretoria" target="_blank" class="btn-directions">
+            📍 Get Directions
+        </a>
+    </div>
+</div>
+
+<div id="imageModal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeModal('imageModal')">×</span>
+        <img id="previewImg" src="" style="border-radius:10px; width:100%; height:auto;">
+        <h3 id="previewTitle"></h3>
+        <button class="btn-main" onclick="addStyleFromPreview()">Book This Style</button>
+    </div>
+</div>
+
+<script>
+const SALON_NUMBER = "27794704299";
+
+const salonData = [
+    {
+        category: "Freehand Style",
+        styles: [
+            { name: "Straight Back", price: 100, img: "FreeHand Straight back.jpeg" },
+            { name: "Straight Up", price: 120, img: "FreeHand StaightUP.jpeg" },
+            { name: "Fish Bone", price: 130, img: "Fish_Bone.jpeg" },
+            { name: "Two Line", price: 150, img: "Twoline.jpeg" },
+            { name: "Benny and Betty", price: 120, img: "BennyBetty.jpeg" },
+            { name: "Niddle", price: 100, img: "Niddle.jpeg" }
+        ]
+    },
+    {
+        category: "Locks",
+        styles: [
+            { name: "Pops Faux Locs", price: 250, img: "popfaux.jpg" }, 
+            { name: "Artificial Dread Locks", price: 250, img: "popfaux.jpg" },
+            { name: "Twist Long", price: 300, img: "TwistLong.jpeg" },
+            { name: "Boho Twist", price: 400, img: "IslandTwist.jpg" }
+        ]
+    },
+    {
+        category: "Curls",
+        styles: [
+            { name: "Millano Curls", price: 250, img: "milano.jpeg" },
+            { name: "Havanna Curls", price: 250, img: "havanna.jpeg" },
+            { name: "Soft Dread", price: 250, img: "SoftDread.jpeg" }
+        ]
+    },
+    {
+        category: "Carrot Braids",
+        styles: [
+            { name: "Straight Back", price: 180, img: "StraightBack.jpeg" },
+            { name: "Straight Up", price: 250, img: "StraightUp.jpeg" },
+            { name: "Fulani Braids Short", price: 250, img: "Fhulani braids.jpg" },
+            { name: "Fulani Braids Long", price: 280, img: "FhulaniLong.jpeg" },
+            { name: "Lemonade Short", price: 250, img: "Lamonate short.jpeg" },
+            { name: "Lemonade Long", price: 280, img: "lamonate long.jpeg" },
+            { name: "Straight Back Side", price: 250, img: "StraightSide.jpeg" }
+        ]
+    },
+    {
+        category: "Knotlex Braids",
+        styles: [
+            { name: "Knotlex Short", price: 200, img: "Knoctlexshort.jpeg" },
+            { name: "Knotlex Long", price: 300, img: "Knoctlex.jpeg" }
+        ]
+    },
+    {
+        category: "Goddess Braids",
+        styles: [
+            { name: "Goddess Short", price: 230, img: "GoddesShort.jpeg" },
+            { name: "Goddess Long", price: 380, img: "GoddesLong.jpeg" },
+            { name: "Jumbo Goddess Braids", price: 250, img: "JumboGoddes.jpeg" },
+            { name: "Jumbo Braids", price: 200, img: "Jumbo.jpeg" }
+        ]
+    }
+];
+
+const flatStyles = [];
+salonData.forEach(cat => cat.styles.forEach(style => flatStyles.push({ ...style, category: cat.category })));
+
+let bookingCart = [];
+let currentPreviewIndex = -1;
+
+const catalog = document.getElementById("catalog-container");
+const dropdown = document.getElementById("hairStyleDropdown");
+
+salonData.forEach((cat) => {
+    let catHTML = `<h2 class="category-title">${cat.category}</h2><div class="hair-styles-row">`;
+    cat.styles.forEach((s) => {
+        const globalIndex = flatStyles.findIndex(fs => fs.name === s.name && fs.category === cat.category);
+        catHTML += `
+            <div class="hair-style" onclick="openPreview(${globalIndex})">
+                <img src="${s.img}" onerror="this.src='https://via.placeholder.com/150?text=No+Image'">
+                <h4>${s.name}</h4>
+                <p>${s.price > 0 ? 'R' + s.price : 'Inquire'}</p>
+            </div>`;
+    });
+    catHTML += `</div>`;
+    catalog.innerHTML += catHTML;
+});
+
+flatStyles.forEach((s, i) => {
+    dropdown.innerHTML += `<option value="${i}">${s.category}: ${s.name} ${s.price > 0 ? '- R' + s.price : ''}</option>`;
+});
+
+function showSection(id) {
+    document.getElementById('homeSection').style.display = (id === 'homeSection') ? 'block' : 'none';
+    document.getElementById('bookingSection').style.display = (id === 'bookingSection') ? 'block' : 'none';
+    document.getElementById('cancelSection').style.display = (id === 'cancelSection') ? 'block' : 'none';
+}
+
+function openModal(id) { document.getElementById(id).style.display = "block"; }
+function closeModal(id) { document.getElementById(id).style.display = "none"; }
+
+function openPreview(i) {
+    currentPreviewIndex = i;
+    document.getElementById("previewImg").src = flatStyles[i].img;
+    document.getElementById("previewTitle").innerText = flatStyles[i].name;
+    openModal('imageModal');
+}
+
+function addStyleFromPreview() { addStyleToCart(currentPreviewIndex); closeModal('imageModal'); showSection('bookingSection'); }
+function addStyleFromDropdown() { if(dropdown.value !== "") addStyleToCart(parseInt(dropdown.value)); }
+
+function addStyleToCart(index) {
+    bookingCart.push(flatStyles[index]);
+    renderCart();
+}
+
+function renderCart() {
+    const list = document.getElementById("selectedStylesList");
+    let total = 0;
+    let html = "";
+    bookingCart.forEach((item) => {
+        html += `<div class="style-item"><span>${item.name}</span><span>R${item.price}</span></div>`;
+        total += item.price;
+    });
+    list.innerHTML = html || `<p style="text-align:center; color:#999;">No styles added.</p>`;
+    document.getElementById("totalPrice").innerText = total;
+}
+
+function confirmFinalBooking() {
+    const name = document.getElementById("custName").value;
+    const phone = document.getElementById("custPhone").value;
+    const date = document.getElementById("bookDate").value;
+    const time = document.getElementById("bookTime").value;
+
+    if(bookingCart.length === 0 || !name || !date || !time) { 
+        alert("Please complete all booking details!"); 
+        return; 
+    }
+
+    const ref = "MB-" + Math.floor(1000 + Math.random() * 9000);
+    const totalPrice = document.getElementById("totalPrice").innerText;
+    let stylesSummary = bookingCart.map(s => `- ${s.name} (R${s.price})`).join("%0A");
+
+    let message = `*NEW SALON BOOKING*%0A%0A` + 
+                  `*Ref:* ${ref}%0A` + 
+                  `*Client:* ${name}%0A` + 
+                  `*WhatsApp:* ${phone}%0A` + 
+                  `*Date:* ${date}%0A` + 
+                  `*Time:* ${time}%0A%0A` + 
+                  `*Styles Selected:*%0A${stylesSummary}%0A%0A` + 
+                  `*Total Price:* R${totalPrice}`;
+
+    window.open(`https://wa.me/${SALON_NUMBER}?text=${message}`, '_blank');
+    
+    // SUCCESS ALERT
+    alert("Booking Successful! Redirecting to WhatsApp to send your request.");
+    
+    // RESET FORM
+    bookingCart = [];
+    renderCart();
+    document.getElementById("custName").value = "";
+    document.getElementById("custPhone").value = "";
+}
+
+function processCancellation() {
+    const ref = document.getElementById("cancelRef").value;
+    if(!ref) {
+        alert("Please enter a Reference Number.");
+        return;
+    }
+    
+    window.open(`https://wa.me/${SALON_NUMBER}?text=Cancellation Request for Ref: ${ref}`, '_blank');
+    
+    // CANCELLATION ALERT
+    alert("Booking Cancelled! Sending cancellation request via WhatsApp.");
+    document.getElementById("cancelRef").value = "";
+}
+
+window.onclick = function(event) { if (event.target.className === 'modal') event.target.style.display = "none"; }
+</script>
+</body>
+</html>
