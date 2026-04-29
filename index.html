@@ -261,6 +261,7 @@
         }
 
         .social-links img { width: 35px; margin: 8px; }
+        .email-link { color: var(--hot-pink); text-decoration: none; font-weight: bold; }
     </style>
 </head>
 
@@ -316,6 +317,9 @@
         <img src="Mbali_Pic.jpeg" alt="Mbali" class="about-img">
         <h2 style="color:var(--hot-pink);">About Our Salon</h2>
         <p>At Mbali Beauty Salon, we specialize in high-quality hair braiding and styling tailored to your unique look. Professional service in a friendly, relaxing environment.</p>
+        
+        <p><strong>Email:</strong> <a href="mailto:mballyzinhle659@gmail.com" class="email-link">mballyzinhle659@gmail.com</a></p>
+
         <h3 style="color:var(--hot-pink); margin-top: 20px;">Service Durations</h3>
         <table class="duration-table">
             <tr><th>Style</th><th>Avg. Time</th></tr>
@@ -341,6 +345,7 @@
 <footer class="footer">
     <h2 style="color:var(--hot-pink);">Contact Us</h2>
     <p>Pretoria | <a href="tel:0794704299" style="color:var(--hot-pink); font-weight:bold; text-decoration:none;">079 470 4299</a></p>
+    <p><a href="mailto:mballyzinhle659@gmail.com" class="email-link">mballyzinhle659@gmail.com</a></p>
     <div class="social-links">
         <a href="https://www.facebook.com/mbally.king.98" target="_blank"><img src="Facebook.png"></a>
         <a href="https://www.instagram.com/zieentler?" target="_blank"><img src="Instagram.jpg"></a>
@@ -434,7 +439,6 @@ salonData.forEach((cat) => {
     catalog.innerHTML += catHTML;
 });
 
-// CLONE FOR INFINITE LOOP
 document.querySelectorAll('.scroll-track').forEach(track => {
     track.innerHTML += track.innerHTML;
 });
