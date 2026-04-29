@@ -97,24 +97,37 @@
             margin-top: 30px;
         }
 
-        /* INFINITE SCROLL STYLES */
+        /* --- UPDATED DRAGGABLE & AUTO SCROLL --- */
         .hair-styles-row {
             display: flex;
-            overflow: hidden;
+            overflow-x: auto; /* Allows manual swipe/move */
             gap: 15px;
             padding: 15px 0;
             position: relative;
             width: 100%;
+            scrollbar-width: none; /* Hides scrollbar for Firefox */
+            -ms-overflow-style: none;  /* Hides scrollbar for IE/Edge */
+            cursor: grab;
+        }
+
+        .hair-styles-row::-webkit-scrollbar {
+            display: none; /* Hides scrollbar for Chrome/Safari */
+        }
+
+        .hair-styles-row:active {
+            cursor: grabbing;
         }
 
         .scroll-track {
             display: flex;
             gap: 15px;
             width: max-content;
-            animation: scroll-left 25s linear infinite;
+            animation: scroll-left 30s linear infinite;
         }
 
-        .hair-styles-row:hover .scroll-track {
+        /* Stops animation when user wants to move it manually */
+        .hair-styles-row:hover .scroll-track,
+        .hair-styles-row:active .scroll-track {
             animation-play-state: paused;
         }
 
@@ -131,7 +144,7 @@
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             min-width: 160px;
             flex-shrink: 0;
-            cursor: pointer;
+            user-select: none; /* Prevents text highlighting while dragging */
         }
 
         .hair-style img {
@@ -139,6 +152,7 @@
             height: 140px;
             border-radius: 10px;
             object-fit: cover;
+            pointer-events: none; /* Prevents image dragging ghosting */
         }
 
         .section-box {
@@ -316,10 +330,8 @@
         <span class="close-btn" onclick="closeModal('aboutModal')">×</span>
         <img src="Mbali_Pic.jpeg" alt="Mbali" class="about-img">
         <h2 style="color:var(--hot-pink);">About Our Salon</h2>
-        <p>At Mbali Beauty Salon, we specialize in high-quality hair braiding and styling tailored to your unique look. Professional service in a friendly, relaxing environment.</p>
-        
+        <p>At Mbali Beauty Salon, we specialize in high-quality hair braiding and styling. Professional service in a friendly environment.</p>
         <p><strong>Email:</strong> <a href="mailto:mballyzinhle659@gmail.com" class="email-link">mballyzinhle659@gmail.com</a></p>
-
         <h3 style="color:var(--hot-pink); margin-top: 20px;">Service Durations</h3>
         <table class="duration-table">
             <tr><th>Style</th><th>Avg. Time</th></tr>
@@ -329,7 +341,7 @@
             <tr><td>Locks & Twists</td><td>2.5 - 4 Hours</td></tr>
         </table>
         <p style="margin-top: 20px;"><strong>Location:</strong> Black Tern St, Hatherley 331-Jr, Pretoria.</p>
-        <a href="https://www.google.com/maps/search/?api=1&query=Black+Tern+St,+Hatherley+331-Jr,+Pretoria" target="_blank" class="btn-directions">📍 Get Directions</a>
+        <a href="https://maps.google.com" target="_blank" class="btn-directions">📍 Get Directions</a>
     </div>
 </div>
 
@@ -439,14 +451,12 @@ salonData.forEach((cat) => {
     catalog.innerHTML += catHTML;
 });
 
+// CLONE FOR INFINITE LOOP
 document.querySelectorAll('.scroll-track').forEach(track => {
     track.innerHTML += track.innerHTML;
 });
 
-flatStyles.forEach((s, i) => {
-    dropdown.innerHTML += `<option value="${i}">${s.category}: ${s.name} - R${s.price}</option>`;
-});
-
+// FUNCTIONS
 function toggleMenu() { document.getElementById("navMenu").classList.toggle("active"); }
 
 function showSection(id) {
@@ -504,6 +514,11 @@ function processCancellation() {
     if(!ref) { alert("Please enter reference number."); return; }
     window.open(`https://wa.me/${SALON_NUMBER}?text=Cancellation Request: ${ref}`, '_blank');
 }
+
+// SETUP DROPDOWN
+flatStyles.forEach((s, i) => {
+    dropdown.innerHTML += `<option value="${i}">${s.category}: ${s.name} - R${s.price}</option>`;
+});
 
 window.onclick = function(event) { if (event.target.className === 'modal') event.target.style.display = "none"; }
 </script>
