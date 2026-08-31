@@ -11,14 +11,12 @@
             --soft-pink: #ff99c2;
             --white: #ffffff;
         }
-
         body {
             font-family: Arial, sans-serif;
             background-color: var(--light-pink);
             margin: 0;
             scroll-behavior: smooth;
         }
-
         header {
             background-color: var(--hot-pink);
             color: white;
@@ -30,28 +28,23 @@
             justify-content: space-between;
             align-items: center;
         }
-
         header h1 { margin: 0; font-size: 1.5rem; }
-
         .menu-icon {
             display: none;
             flex-direction: column;
             gap: 4px;
             cursor: pointer;
         }
-
         .menu-icon div {
             width: 25px;
             height: 3px;
             background-color: white;
             border-radius: 2px;
         }
-
         .nav {
             display: flex;
             gap: 10px;
         }
-
         .nav button {
             padding: 8px 15px;
             border: none;
@@ -65,20 +58,17 @@
             gap: 8px;
             transition: 0.3s;
         }
-
         .nav-btn-img {
             width: 20px;
             height: 20px;
             border-radius: 50%;
             object-fit: cover;
         }
-
         .container {
             width: 95%;
             max-width: 1200px;
             margin: 20px auto;
         }
-
         .hero {
             text-align: center;
             padding: 30px 10px;
@@ -87,7 +77,6 @@
             margin-bottom: 20px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.05);
         }
-
         h2.category-title { 
             color: var(--hot-pink); 
             border-bottom: 2px solid var(--hot-pink);
@@ -96,7 +85,6 @@
             font-size: 1.1rem;
             margin-top: 30px;
         }
-
         .hair-styles-row {
             display: flex;
             overflow-x: auto;
@@ -108,28 +96,22 @@
             -ms-overflow-style: none;
             cursor: grab;
         }
-
         .hair-styles-row::-webkit-scrollbar { display: none; }
-
         .hair-styles-row:active { cursor: grabbing; }
-
         .scroll-track {
             display: flex;
             gap: 15px;
             width: max-content;
             animation: scroll-left 30s linear infinite;
         }
-
         .hair-styles-row:hover .scroll-track,
         .hair-styles-row:active .scroll-track {
             animation-play-state: paused;
         }
-
         @keyframes scroll-left {
             0% { transform: translateX(0); }
             100% { transform: translateX(-50%); }
         }
-
         .hair-style {
             background: white;
             padding: 10px;
@@ -140,7 +122,6 @@
             flex-shrink: 0;
             user-select: none;
         }
-
         .hair-style img {
             width: 100%;
             height: 140px;
@@ -148,7 +129,6 @@
             object-fit: cover;
             pointer-events: none;
         }
-
         .section-box {
             display: none;
             background: white;
@@ -159,7 +139,6 @@
             margin: 20px auto;
             text-align: center;
         }
-
         input, select {
             width: 100%;
             padding: 12px;
@@ -168,7 +147,6 @@
             border: 1px solid var(--soft-pink);
             box-sizing: border-box;
         }
-
         .btn-main {
             background: var(--hot-pink);
             color: white;
@@ -179,7 +157,6 @@
             font-weight: bold;
             width: 100%;
         }
-
         .modal {
             display: none; 
             position: fixed;
@@ -189,7 +166,6 @@
             background: rgba(0,0,0,0.8);
             overflow-y: auto;
         }
-
         .modal-content {
             background: white;
             margin: 5% auto;
@@ -200,7 +176,6 @@
             text-align: center;
             position: relative;
         }
-
         .about-img {
             width: 120px;
             height: 120px;
@@ -209,21 +184,17 @@
             border: 3px solid var(--hot-pink);
             margin-bottom: 15px;
         }
-
         .duration-table {
             width: 100%;
             margin-top: 15px;
             border-collapse: collapse;
             text-align: left;
         }
-
         .duration-table th, .duration-table td {
             padding: 10px;
             border-bottom: 1px solid #eee;
         }
-
         .duration-table th { color: var(--hot-pink); }
-
         .close-btn {
             position: absolute;
             right: 15px; top: 10px;
@@ -231,7 +202,6 @@
             font-size: 30px;
             color: var(--hot-pink);
         }
-
         .btn-directions {
             background: #4CAF50;
             color: white;
@@ -242,7 +212,6 @@
             font-weight: bold;
             margin-top: 15px;
         }
-
         @media (max-width: 768px) {
             .menu-icon { display: flex; }
             .nav {
@@ -259,7 +228,6 @@
             .nav.active { display: flex; }
             .nav button { width: 100%; color: var(--hot-pink); border: 1px solid var(--light-pink); }
         }
-
         .footer {
             background: white;
             margin-top: 40px;
@@ -267,14 +235,11 @@
             text-align: center;
             border-top: 2px solid var(--light-pink);
         }
-
         .social-links img { width: 35px; margin: 8px; }
         .email-link { color: var(--hot-pink); text-decoration: none; font-weight: bold; }
     </style>
 </head>
-
 <body>
-
 <header>
     <h1>Mbali's Beauty Salon</h1>
     <div class="menu-icon" onclick="toggleMenu()">
@@ -287,7 +252,6 @@
         <button onclick="openModal('aboutModal')"><img src="About us.png" class="nav-btn-img"> About</button>
     </div>
 </header>
-
 <div class="container">
     <div id="homeSection">
         <div class="hero">
@@ -296,7 +260,6 @@
         </div>
         <div id="catalog-container"></div>
     </div>
-
     <div class="section-box" id="bookingSection">
         <h2>Book Appointment</h2>
         <select id="hairStyleDropdown"><option value="">-- Choose a Style --</option></select>
@@ -311,14 +274,12 @@
         <div style="font-size:1.4rem; color:var(--hot-pink); font-weight:bold; margin:15px 0;">Total: R<span id="totalPrice">0</span></div>
         <button class="btn-main" onclick="confirmFinalBooking()">Confirm & Send WhatsApp</button>
     </div>
-
     <div class="section-box" id="cancelSection">
         <h2>Cancel Appointment</h2>
         <input type="text" id="cancelRef" placeholder="Reference Number">
         <button class="btn-main" style="background:#ff4d4d;" onclick="processCancellation()">Send Cancellation Request</button>
     </div>
 </div>
-
 <div id="aboutModal" class="modal">
     <div class="modal-content">
         <span class="close-btn" onclick="closeModal('aboutModal')">×</span>
@@ -338,7 +299,6 @@
         <a href="https://maps.google.com/?q=Black+Tern+St,+Hatherley+331-Jr,+Pretoria" target="_blank" class="btn-directions">📍 Get Directions</a>
     </div>
 </div>
-
 <div id="imageModal" class="modal">
     <div class="modal-content">
         <span class="close-btn" onclick="closeModal('imageModal')">×</span>
@@ -347,7 +307,6 @@
         <button class="btn-main" onclick="addStyleFromPreview()">Book This Style</button>
     </div>
 </div>
-
 <footer class="footer">
     <h2 style="color:var(--hot-pink);">Contact Us</h2>
     <p>Pretoria | <a href="tel:0794704299" style="color:var(--hot-pink); font-weight:bold; text-decoration:none;">079 470 4299</a></p>
@@ -357,11 +316,9 @@
         <a href="https://www.tiktok.com/@ziee.ntler?" target="_blank"><img src="Tiktok.png"></a>
     </div>
 </footer>
-
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
   const firebaseConfig = {
     apiKey: "AIzaSyBuXqC_tAsrRvui-TSWrnYyq1buhxtng6I",
     authDomain: "mbalisalon-3106b.firebaseapp.com",
@@ -371,78 +328,59 @@
     appId: "1:772199228866:web:36bf0f91012c803c53e25b",
     measurementId: "G-NWQS1GVHHN"
   };
-
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
-
   const SALON_NUMBER = "27794704299";
   const salonData = [
     {
         category: "Freehand Style",
         styles: [
-            { name: "Straight Back", price: 100, img: "FreeHand Straight back.jpeg" },
-            { name: "Straight Up", price: 120, img: "FreeHand StaightUP.jpeg" },
-            { name: "Fish Bone", price: 130, img: "Fish_Bone.jpeg" },
-            { name: "Two Line", price: 150, img: "Twoline.jpeg" },
-            { name: "Benny and Betty", price: 120, img: "BennyBetty.jpeg" },
-            { name: "Niddle", price: 100, img: "Niddle.jpeg" }
+            { name: "Niddle", price: 100, img: "Niddle.jpeg" },
+            { name: "Benny and Betty (normal)", price: 80, img: "BennyBetty.jpeg" },
+            { name: "Free hand (straight back)", price: 100, img: "FreeHand Straight back.jpeg" },
+            { name: "Free hand (straight up)", price: 120, img: "FreeHand StaightUP.jpeg" },
+            { name: "Free hand (fish bone)", price: 130, img: "Fish_Bone.jpeg" },
+            { name: "Free hand (two line)", price: 150, img: "Twoline.jpeg" }
         ]
     },
     {
-        category: "Locks",
-        styles: [
-            { name: "Pops Faux Locs", price: 250, img: "popfaux.jpg" }, 
-            { name: "Artificial Dread Locks", price: 250, img: "popfaux.jpg" },
-            { name: "Twist Long", price: 300, img: "TwistLong.jpeg" },
-            { name: "Boho Twist", price: 400, img: "IslandTwist.jpg" }
-        ]
-    },
-    {
-        category: "Curls",
-        styles: [
-            { name: "Millano Curls", price: 250, img: "milano.jpeg" },
-            { name: "Havanna Curls", price: 250, img: "havanna.jpeg" },
-            { name: "Soft Dread", price: 250, img: "SoftDread.jpeg" }
-        ]
-    },
-    {
-        category: "Carrot Braids",
+        category: "Carrots Braids",
         styles: [
             { name: "Straight Back", price: 200, img: "StraightBack.jpeg" },
             { name: "Straight Up", price: 250, img: "StraightUp.jpeg" },
+            { name: "Straight Side", price: 250, img: "StraightSide.jpeg" },
             { name: "Fulani Braids Short", price: 250, img: "Fhulani braids.jpg" },
+            { name: "Lemonade Braids Short", price: 250, img: "Lamonate short.jpeg" },
             { name: "Fulani Braids Long", price: 280, img: "FhulaniLong.jpeg" },
-            { name: "Lemonade Short", price: 250, img: "Lamonate short.jpeg" },
-            { name: "Lemonade Long", price: 280, img: "lamonate long.jpeg" },
-            { name: "Straight Back Side", price: 250, img: "StraightSide.jpeg" }
+            { name: "Lemonade Braids Long", price: 280, img: "lamonate long.jpeg" }
         ]
     },
     {
-        category: "Knotlex Braids",
+        category: "Knotless & Goddess Braids",
         styles: [
-            { name: "Knotlex Short", price: 200, img: "Knoctlexshort.jpeg" },
-            { name: "Knotlex Long", price: 300, img: "Knoctlex.jpeg" }
+            { name: "Knotless Braids Short", price: 230, img: "Knoctlexshort.jpeg" },
+            { name: "Goddess Braids Short", price: 250, img: "GoddesShort.jpeg" },
+            { name: "Knotless Long", price: 350, img: "Knoctlex.jpeg" },
+            { name: "Goddess Braids Long", price: 400, img: "GoddesLong.jpeg" }
         ]
     },
     {
-        category: "Goddess Braids",
+        category: "Curls & Dreds",
         styles: [
-            { name: "Goddess Short", price: 250, img: "GoddesShort.jpeg" },
-            { name: "Goddess Long", price: 380, img: "GoddesLong.jpeg" },
-            { name: "Jumbo Goddess Braids", price: 250, img: "JumboGoddes.jpeg" },
-            { name: "Jumbo Braids", price: 200, img: "Jumbo.jpeg" }
+            { name: "French Curls", price: 350, img: "milano.jpeg" },
+            { name: "French Curls Short", price: 250, img: "milano.jpeg" },
+            { name: "Milland Curls", price: 250, img: "milano.jpeg" },
+            { name: "Havana Curls", price: 250, img: "havanna.jpeg" },
+            { name: "Soft Dreds", price: 250, img: "SoftDread.jpeg" }
         ]
     }
   ];
-
   const flatStyles = [];
   salonData.forEach(cat => cat.styles.forEach(style => flatStyles.push({ ...style, category: cat.category })));
   let bookingCart = [];
   let currentPreviewIndex = -1;
-
   const catalog = document.getElementById("catalog-container");
   const dropdown = document.getElementById("hairStyleDropdown");
-
   salonData.forEach((cat) => {
     let catHTML = `<h2 class="category-title">${cat.category}</h2>
                    <div class="hair-styles-row">
@@ -459,11 +397,9 @@
     catHTML += `</div></div>`;
     catalog.innerHTML += catHTML;
   });
-
   document.querySelectorAll('.scroll-track').forEach(track => {
     track.innerHTML += track.innerHTML;
   });
-
   window.toggleMenu = () => document.getElementById("navMenu").classList.toggle("active");
   window.showSection = (id) => {
     document.getElementById('homeSection').style.display = (id === 'homeSection') ? 'block' : 'none';
@@ -479,11 +415,9 @@
     document.getElementById("previewTitle").innerText = flatStyles[i].name;
     window.openModal('imageModal');
   };
-
   window.addStyleFromPreview = () => { window.addStyleToCart(currentPreviewIndex); window.closeModal('imageModal'); window.showSection('bookingSection'); };
   window.addStyleFromDropdown = () => { if(dropdown.value !== "") window.addStyleToCart(parseInt(dropdown.value)); };
   window.addStyleToCart = (index) => { bookingCart.push(flatStyles[index]); renderCart(); };
-
   function renderCart() {
     const list = document.getElementById("selectedStylesList");
     let total = 0;
@@ -495,18 +429,15 @@
     list.innerHTML = html || `<p style="text-align:center; color:#999;">No styles added.</p>`;
     document.getElementById("totalPrice").innerText = total;
   }
-
   window.confirmFinalBooking = async () => {
     const name = document.getElementById("custName").value;
     const phone = document.getElementById("custPhone").value;
     const date = document.getElementById("bookDate").value;
     const time = document.getElementById("bookTime").value;
-
     if(bookingCart.length === 0 || !name || !date || !time) { 
         alert("Please complete all details!"); 
         return; 
     }
-
     const ref = "MB-" + Math.floor(1000 + Math.random() * 9000);
     const totalPrice = document.getElementById("totalPrice").innerText;
     
@@ -522,7 +453,6 @@
             timestamp: serverTimestamp(),
             status: "pending"
         });
-
         let stylesSummary = bookingCart.map(s => `- ${s.name} (R${s.price})`).join("%0A");
         let message = `*NEW SALON BOOKING*%0A%0A` + 
                       `*Ref:* ${ref}%0A` + 
@@ -532,7 +462,6 @@
                       `*Time:* ${time}%0A%0A` + 
                       `*Styles:*%0A${stylesSummary}%0A%0A` + 
                       `*Total:* R${totalPrice}`;
-
         window.open(`https://wa.me/${SALON_NUMBER}?text=${message}`, '_blank');
         alert("Booking saved! Opening WhatsApp...");
     } catch (e) {
@@ -540,17 +469,14 @@
         alert("Error saving booking. Please try again.");
     }
   };
-
   window.processCancellation = () => {
     const ref = document.getElementById("cancelRef").value;
     if(!ref) { alert("Please enter reference number."); return; }
     window.open(`https://wa.me/${SALON_NUMBER}?text=Cancellation Request: ${ref}`, '_blank');
   };
-
   flatStyles.forEach((s, i) => {
     dropdown.innerHTML += `<option value="${i}">${s.category}: ${s.name} - R${s.price}</option>`;
   });
-
   window.onclick = (event) => { if (event.target.className === 'modal') event.target.style.display = "none"; };
 </script>
 </body>
