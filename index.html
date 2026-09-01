@@ -121,6 +121,7 @@
             min-width: 160px;
             flex-shrink: 0;
             user-select: none;
+            cursor: pointer;
         }
         .hair-style img {
             width: 100%;
@@ -293,7 +294,7 @@
             <tr><td>Freehand</td><td>1 - 1.5 Hours</td></tr>
             <tr><td>Carrot Braids</td><td>2 - 3 Hours</td></tr>
             <tr><td>Knotless Braids</td><td>3 - 5 Hours</td></tr>
-            <tr><td>Locks & Twists</td><td>2.5 - 4 Hours</td></tr>
+            <tr><td>Curls & Soft Dread</td><td>2 - 3 Hours</td></tr>
         </table>
         <p style="margin-top: 20px;"><strong>Location:</strong> Black Tern St, Hatherley 331-Jr, Pretoria.</p>
         <a href="https://maps.google.com/?q=Black+Tern+St,+Hatherley+331-Jr,+Pretoria" target="_blank" class="btn-directions">📍 Get Directions</a>
@@ -331,56 +332,59 @@
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
   const SALON_NUMBER = "27794704299";
+  
   const salonData = [
     {
-        category: "Freehand Style",
+        category: "Freehand Styles",
         styles: [
-            { name: "Niddle", price: 100, img: "Niddle.jpeg" },
-            { name: "Benny and Betty (normal)", price: 80, img: "BennyBetty.jpeg" },
-            { name: "Free hand (straight back)", price: 100, img: "FreeHand Straight back.jpeg" },
-            { name: "Free hand (straight up)", price: 120, img: "FreeHand StaightUP.jpeg" },
-            { name: "Free hand (fish bone)", price: 130, img: "Fish_Bone.jpeg" },
-            { name: "Free hand (two line)", price: 150, img: "Twoline.jpeg" }
+            { name: "Needle Braids", price: 100, img: "Niddle.jpeg" },
+            { name: "Benny & Betty (Normal)", price: 80, img: "BennyBetty.jpeg" },
+            { name: "Freehand (Straight Back)", price: 100, img: "FreeHand Straight back.jpeg" },
+            { name: "Freehand (Straight Up)", price: 120, img: "FreeHand StaightUP.jpeg" },
+            { name: "Freehand (Fishbone)", price: 130, img: "Fish_Bone.jpeg" },
+            { name: "Freehand (Two Line)", price: 150, img: "Twoline.jpeg" }
         ]
     },
     {
-        category: "Carrots Braids",
+        category: "Carrot Braids",
         styles: [
             { name: "Straight Back", price: 200, img: "StraightBack.jpeg" },
             { name: "Straight Up", price: 250, img: "StraightUp.jpeg" },
             { name: "Straight Side", price: 250, img: "StraightSide.jpeg" },
-            { name: "Fulani Braids Short", price: 250, img: "Fhulani braids.jpg" },
-            { name: "Lemonade Braids Short", price: 250, img: "Lamonate short.jpeg" },
-            { name: "Fulani Braids Long", price: 280, img: "FhulaniLong.jpeg" },
-            { name: "Lemonade Braids Long", price: 280, img: "lamonate long.jpeg" }
+            { name: "Fulani Braids (Short)", price: 250, img: "Fhulani braids.jpg" },
+            { name: "Lemonade Braids (Short)", price: 250, img: "Lamonate short.jpeg" },
+            { name: "Fulani Braids (Long)", price: 280, img: "FhulaniLong.jpeg" },
+            { name: "Lemonade Braids (Long)", price: 280, img: "lamonate long.jpeg" }
         ]
     },
     {
         category: "Knotless & Goddess Braids",
         styles: [
-            { name: "Knotless Braids Short", price: 230, img: "Knoctlexshort.jpeg" },
-            { name: "Goddess Braids Short", price: 250, img: "GoddesShort.jpeg" },
-            { name: "Knotless Long", price: 350, img: "Knoctlex.jpeg" },
-            { name: "Goddess Braids Long", price: 400, img: "GoddesLong.jpeg" }
+            { name: "Knotless Braids (Short)", price: 230, img: "Knoctlexshort.jpeg" },
+            { name: "Goddess Braids (Short)", price: 250, img: "GoddesShort.jpeg" },
+            { name: "Knotless Braids (Long)", price: 350, img: "Knoctlex.jpeg" },
+            { name: "Goddess Braids (Long)", price: 400, img: "GoddesLong.jpeg" }
         ]
     },
     {
-        category: "Curls & Dreds",
+        category: "Curls & Soft Dread",
         styles: [
-            { name: "French Curls", price: 350, img: "milano.jpeg" },
-            { name: "French Curls Short", price: 250, img: "milano.jpeg" },
-            { name: "Milland Curls", price: 250, img: "milano.jpeg" },
+            { name: "French Curls (Long)", price: 350, img: "Picture4.jpg" },
+            { name: "French Curls (Short)", price: 250, img: "Fresh curlse.jpeg" },
+            { name: "Milano Curls", price: 250, img: "milano.jpeg" },
             { name: "Havana Curls", price: 250, img: "havanna.jpeg" },
-            { name: "Soft Dreds", price: 250, img: "SoftDread.jpeg" }
+            { name: "Soft Dread", price: 250, img: "SoftDread.jpeg" }
         ]
     }
   ];
+
   const flatStyles = [];
   salonData.forEach(cat => cat.styles.forEach(style => flatStyles.push({ ...style, category: cat.category })));
   let bookingCart = [];
   let currentPreviewIndex = -1;
   const catalog = document.getElementById("catalog-container");
   const dropdown = document.getElementById("hairStyleDropdown");
+
   salonData.forEach((cat) => {
     let catHTML = `<h2 class="category-title">${cat.category}</h2>
                    <div class="hair-styles-row">
@@ -397,9 +401,11 @@
     catHTML += `</div></div>`;
     catalog.innerHTML += catHTML;
   });
+
   document.querySelectorAll('.scroll-track').forEach(track => {
     track.innerHTML += track.innerHTML;
   });
+
   window.toggleMenu = () => document.getElementById("navMenu").classList.toggle("active");
   window.showSection = (id) => {
     document.getElementById('homeSection').style.display = (id === 'homeSection') ? 'block' : 'none';
@@ -418,6 +424,7 @@
   window.addStyleFromPreview = () => { window.addStyleToCart(currentPreviewIndex); window.closeModal('imageModal'); window.showSection('bookingSection'); };
   window.addStyleFromDropdown = () => { if(dropdown.value !== "") window.addStyleToCart(parseInt(dropdown.value)); };
   window.addStyleToCart = (index) => { bookingCart.push(flatStyles[index]); renderCart(); };
+
   function renderCart() {
     const list = document.getElementById("selectedStylesList");
     let total = 0;
@@ -429,6 +436,7 @@
     list.innerHTML = html || `<p style="text-align:center; color:#999;">No styles added.</p>`;
     document.getElementById("totalPrice").innerText = total;
   }
+
   window.confirmFinalBooking = async () => {
     const name = document.getElementById("custName").value;
     const phone = document.getElementById("custPhone").value;
@@ -469,14 +477,17 @@
         alert("Error saving booking. Please try again.");
     }
   };
+
   window.processCancellation = () => {
     const ref = document.getElementById("cancelRef").value;
     if(!ref) { alert("Please enter reference number."); return; }
     window.open(`https://wa.me/${SALON_NUMBER}?text=Cancellation Request: ${ref}`, '_blank');
   };
+
   flatStyles.forEach((s, i) => {
     dropdown.innerHTML += `<option value="${i}">${s.category}: ${s.name} - R${s.price}</option>`;
   });
+
   window.onclick = (event) => { if (event.target.className === 'modal') event.target.style.display = "none"; };
 </script>
 </body>
