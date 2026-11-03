@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mbali's Beauty Salon - Admin</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        :root {
+            --salon-pink: #ff3385;
+            --salon-bg: #fff0f5;
+            --white: #ffffff;
+            --input-border: #ffb3d1;
+        }
+
+        * { margin:0; padding:0; box-sizing:border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background: var(--salon-bg); padding: 10px; min-height: 100vh; }
+        .dashboard-container { max-width: 1400px; margin: auto; }
+
+        .top-bar {
+            background: var(--white); padding: 15px; border-radius: 12px;
+            display: flex; flex-direction: column; gap: 10px; align-items: center;
+            margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        @media (min-width: 768px) { .top-bar { flex-direction: row; justify-content: space-between; } }
+
+        .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin-bottom: 20px; }
+        .kpi-card { background: var(--white); padding: 20px; border-radius: 15px; text-align: center; border-bottom: 4px solid var(--salon-pink); }
+        .kpi-card h3 { font-size: 12px; color: #888; text-transform: uppercase; }
+        .kpi-card h2 { color: var(--salon-pink); font-size: 28px; margin-top: 5px; }
+
+        .visuals-grid { display: grid; grid-template-columns: 1fr; gap: 20px; margin-bottom: 20px; }
+        @media (min-width: 992px) { .visuals-grid { grid-template-columns: repeat(3, 1fr); } }
+        .chart-container { background: var(--white); padding: 15px; border-radius: 15px; height: 350px; position: relative; box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
+
+        .table-section { background: var(--white); padding: 15px; border-radius: 15px; overflow-x: auto; margin-bottom: 20px; }
+        table { width: 100%; border-collapse: collapse; min-width: 600px; }
+        th, td { text-align: left; padding: 12px; border-bottom: 1px solid #eee; font-size: 14px; }
+
+        .btn { padding: 10px 15px; border-radius: 8px; border: none; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .btn-add { background: #333; color: white; }
+        .btn-confirm { background: #28a745; color: white; padding: 6px 12px; font-size: 12px; }
+        .btn-cancel { background: #dc3545; color: white; padding: 6px 12px; font-size: 12px; margin-left: 5px;}
+        .btn-logout { background: var(--salon-pink); color: white; }
+        .contact-cell a.num { color:#222; font-weight:bold; text-decoration:none; font-size:15px; white-space:nowrap; }
+        .contact-cell small { display:block; color:#888; font-size:12px; margin-top:2px; word-break:break-all; }
+        .contact-actions { display:flex; gap:6px; margin-top:6px; flex-wrap:wrap; }
+        .btn-call, .btn-wa { display:inline-flex; align-items:center; gap:5px; padding:5px 10px; border-radius:6px; font-size:12px; font-weight:bold; text-decoration:none; white-space:nowrap; }
+        .btn-call { background:#f2f2f2; color:#333; }
+        .btn-wa { background:#25D366; color:#fff; }
+        .btn-call:hover { background:#e4e4e4; } .btn-wa:hover { background:#1fb257; }
+
+        .admin-tools { display:flex; flex-wrap:wrap; gap:10px; align-items:center; justify-content:space-between; margin-bottom:12px; }
+        .admin-tools input { max-width: 320px; margin-top:0; }
+        .pill { display:inline-block; padding:3px 10px; border-radius:20px; font-size:12px; font-weight:bold; }
+        .pill-owner { background:#333; color:#fff; }
+        .pill-admin { background:#ffe0ec; color:#d6146a; }
+        .pill-client { background:#f2f2f2; color:#777; }
+        .btn-make { background: var(--salon-pink); color:white; padding:6px 12px; font-size:12px; }
+        .btn-remove { background:#fff; color:#dc3545; border:1px solid #dc3545; padding:5px 11px; font-size:12px; }
+        .note { font-size:13px; color:#777; margin-bottom:10px; }
+        .add-admin { background:#fff7fa; border:1px solid #ffd1e3; border-radius:12px; padding:16px; margin-bottom:18px; }
+        .add-admin h4 { color:#d6146a; margin-bottom:4px; font-size:15px; }
+        .add-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:0 14px; }
+        .add-row { display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-top:14px; }
+        .form-msg { font-size:13px; font-weight:bold; }
+        .form-msg.ok { color:#28a745; } .form-msg.bad { color:#dc3545; }
+        details.uid-add { margin-top:14px; font-size:13px; }
+        details.uid-add summary { cursor:pointer; color:#777; font-weight:bold; }
+        input, select { width: 100%; padding: 10px; border: 1px solid var(--input-border); border-radius: 8px; margin-top: 5px; }
+        label { display: block; margin-top: 10px; font-size: 12px; color: #555; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div id="loginPage" style="max-width: 400px; margin: 100px auto; text-align: center; background: white; padding: 30px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+    <h2 style="color:var(--salon-pink); margin-bottom: 15px;">Mbali's Salon Admin</h2>
+    <input type="email" id="adminEmail" placeholder="Email Address">
+    <input type="password" id="adminPassword" placeholder="Password" style="margin-top:10px;">
+    <button onclick="loginAdmin()" class="btn btn-logout" style="width:100%; margin-top:15px;" id="loginBtn">Sign In</button>
+    <p id="loginErr" style="color:#dc3545; font-size:13px; font-weight:bold; margin-top:12px; display:none;"></p>
+    <p style="margin-top:18px; font-size:13px;"><a href="index.html" style="color:var(--salon-pink); font-weight:bold;">&larr; Back to website</a></p>
+</div>
+
+<div id="dashboard" class="dashboard-container" style="display:none;">
+    <div class="top-bar">
+        <h1 style="color:var(--salon-pink)">Mbali's Beauty Salon Admin</h1>
+        <div>
+            <button class="btn btn-add" onclick="openModal()">+ Record Walk-in Work</button>
+            <button class="btn btn-logout" onclick="logoutAdmin()">Logout</button>
+        </div>
+    </div>
+
+    <div class="kpi-grid">
+        <div class="kpi-card"><h3>Current Daily Revenue</h3><h2 id="dayRev">R0</h2></div>
+        <div class="kpi-card"><h3>Current Weekly Revenue</h3><h2 id="weekRev">R0</h2></div>
+        <div class="kpi-card"><h3>Current Monthly Revenue</h3><h2 id="monthRev">R0</h2></div>
+    </div>
+
+    <div class="visuals-grid">
+        <div class="chart-container"><canvas id="chartWeek"></canvas></div>
+        <div class="chart-container"><canvas id="chartYear"></canvas></div>
+        <div class="chart-container"><canvas id="chartStyle"></canvas></div>
+    </div>
+
+    <div class="table-section" id="adminsSection" style="display:none;">
+        <h3 style="color:var(--salon-pink); margin-bottom: 6px;">Manage Admins</h3>
+        <p class="note">Anyone who has signed up on the website appears here. Tap <b>Make Admin</b> to let them open this dashboard.</p>
+        <div class="add-admin">
+            <h4>Add Admin Manually</h4>
+            <p class="note">Create an account for a staff member. Give them the email and temporary password so they can sign in with <b>Sign in as admin</b> on the website.</p>
+            <div class="add-grid">
+                <div><label for="naName">Full name</label><input type="text" id="naName" placeholder="e.g. Zinhle Dlamini"></div>
+                <div><label for="naPhone">WhatsApp number</label><input type="tel" id="naPhone" placeholder="e.g. 072 123 4567"></div>
+                <div><label for="naEmail">Email address</label><input type="email" id="naEmail" placeholder="staff@example.com"></div>
+                <div><label for="naPass">Temporary password</label><input type="text" id="naPass" placeholder="At least 6 characters" autocomplete="off"></div>
+            </div>
+            <div class="add-row">
+                <button class="btn btn-make" style="padding:10px 18px; font-size:14px;" id="naBtn" onclick="addAdminManually()">+ Create Admin Account</button>
+                <span class="form-msg" id="naMsg"></span>
+            </div>
+            <details class="uid-add">
+                <summary>Already has an account? Add by User UID</summary>
+                <p class="note" style="margin-top:8px;">Find the UID in Firebase → Authentication → Users.</p>
+                <div class="add-row" style="margin-top:0;">
+                    <input type="text" id="uidInput" placeholder="User UID" style="max-width:340px; margin-top:0;">
+                    <input type="text" id="uidName" placeholder="Name (optional)" style="max-width:220px; margin-top:0;">
+                    <button class="btn btn-make" style="padding:10px 18px; font-size:14px;" onclick="addAdminByUid()">Add as Admin</button>
+                    <span class="form-msg" id="uidMsg"></span>
+                </div>
+            </details>
+        </div>
+
+        <div class="admin-tools">
+            <input type="search" id="userSearch" placeholder="Search by name, email or phone" oninput="renderUsers()">
+            <span class="note" id="adminCount" style="margin:0;"></span>
+        </div>
+        <table>
+            <thead><tr><th>Name</th><th>Email</th><th>WhatsApp</th><th>Access</th><th>Action</th></tr></thead>
+            <tbody id="usersTable"><tr><td colspan="5" style="color:#888;">Loading…</td></tr></tbody>
+        </table>
+    </div>
+
+    <div class="table-section">
+        <h3 style="color:var(--salon-pink); margin-bottom: 10px;">New Booking</h3>
+        <table>
+            <thead><tr><th>Client</th><th>Contact</th><th>Style</th><th>Date &amp; Time</th><th>Price</th><th>Action</th></tr></thead>
+            <tbody id="bookingTable"></tbody>
+        </table>
+    </div>
+</div>
+
+<div id="workModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:1000;">
+    <div style="background:white; width:95%; max-width:500px; margin:30px auto; padding:25px; border-radius:15px; max-height: 90vh; overflow-y: auto;">
+        <h2 style="text-align:center; color: var(--salon-pink);">Record Daily Work</h2>
+        <label>Customer Name</label><input type="text" id="wName">
+        <label>Choose a Style</label>
+        <select id="wStyle">
+            <option value="0">-- Choose a Style --</option>
+            <option value="100">Freehand Style: Straight Back - R100</option>
+            <option value="120">Freehand Style: Straight Up - R120</option>
+            <option value="130">Freehand Style: Fish Bone - R130</option>
+            <option value="150">Freehand Style: Two Line - R150</option>
+            <option value="120">Freehand Style: Benny and Betty - R120</option>
+            <option value="100">Freehand Style: Niddle - R100</option>
+            <option value="250">Locks: Pops Faux Locs - R250</option>
+            <option value="250">Locks: Artificial Dread Locks - R250</option>
+            <option value="300">Locks: Twist Long - R300</option>
+            <option value="400">Locks: Boho Twist - R400</option>
+            <option value="250">Curls: Millano Curls - R250</option>
+            <option value="250">Curls: Havanna Curls - R250</option>
+            <option value="250">Curls: Soft Dread - R250</option>
+            <option value="180">Carrot Braids: Straight Back - R200</option>
+            <option value="250">Carrot Braids: Straight Up - R250</option>
+            <option value="250">Carrot Braids: Fulani Braids Short - R250</option>
+            <option value="280">Carrot Braids: Fulani Braids Long - R280</option>
+            <option value="250">Carrot Braids: Lemonade Short - R250</option>
+            <option value="280">Carrot Braids: Lemonade Long - R280</option>
+            <option value="250">Carrot Braids: Straight Back Side - R250</option>
+            <option value="200">Knotlex Braids: Knotlex Short - R200</option>
+            <option value="300">Knotlex Braids: Knotlex Long - R300</option>
+            <option value="230">Goddess Braids: Goddess Short - R230</option>
+            <option value="380">Goddess Braids: Goddess Long - R380</option>
+            <option value="250">Goddess Braids: Jumbo Goddess Braids - R250</option>
+            <option value="200">Goddess Braids: Jumbo Braids - R200</option>
+        </select>
+        <label>Date</label><input type="date" id="wDate">
+        <label>Time Came</label><input type="time" id="wTime">
+        <button class="btn btn-logout" style="width:100%; margin-top:20px;" onclick="saveManualWork()">Confirm & Save to Income</button>
+        <button onclick="closeModal()" style="width:100%; margin-top:10px; border:none; background:none; cursor:pointer; color:#777;">Cancel</button>
+    </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+<script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyBuXqC_tAsrRvui-TSWrnYyq1buhxtng6I",
+        authDomain: "mbalisalon-3106b.firebaseapp.com",
+        projectId: "mbalisalon-3106b",
+        storageBucket: "mbalisalon-3106b.firebasestorage.app",
+        messagingSenderId: "772199228866",
+        appId: "1:772199228866:web:36bf0f91012c803c53e25b"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    // The salon owner: always an admin, and the only one who can add or remove admins.
+    const OWNER_UID = "vTu2FrvfkJXxFsnen2cVaLaElUJ2";
+    let usersData = [], adminIds = new Set(), adminDocs = {};
+    const db = firebase.firestore();
+    let cWeek, cYear, cStyle;
+
+    let unsubs = [];
+    function showLoginError(msg) {
+        const el = document.getElementById("loginErr");
+        el.textContent = msg; el.style.display = msg ? "block" : "none";
+    }
+    function loginAdmin() {
+        const e = document.getElementById("adminEmail").value.trim();
+        const p = document.getElementById("adminPassword").value;
+        if (!e || !p) return showLoginError("Please enter your email and password.");
+        showLoginError("");
+        auth.signInWithEmailAndPassword(e, p).catch(err => {
+            const c = err.code || "";
+            showLoginError(/invalid-credential|wrong-password|user-not-found/.test(c) ? "Your email or password is incorrect." :
+                           /too-many-requests/.test(c) ? "Too many attempts. Please wait a few minutes." : err.message);
+        });
+    }
+    function logoutAdmin() { auth.signOut(); }
+
+    function showLogin() {
+        unsubs.forEach(u => u()); unsubs = [];
+        document.getElementById("loginPage").style.display = "block";
+        document.getElementById("dashboard").style.display = "none";
+    }
+
+    // Only accounts listed in the "admins" collection can open the dashboard.
+    auth.onAuthStateChanged(async user => {
+        if (!user) return showLogin();
+        let isAdmin = false;
+        if (user.uid === OWNER_UID) isAdmin = true;
+        else { try { isAdmin = (await db.collection("admins").doc(user.uid).get()).exists; } catch (e) {} }
+        if (!isAdmin) {
+            showLoginError("This account doesn't have admin access.");
+            await auth.signOut();
+            return;
+        }
+        showLoginError("");
+        document.getElementById("loginPage").style.display = "none";
+        document.getElementById("dashboard").style.display = "block";
+        initRealtime();
+        document.getElementById("adminsSection").style.display = user.uid === OWNER_UID ? "block" : "none";
+        if (user.uid === OWNER_UID) initAdminManager();
+    });
+
+    function initAdminManager() {
+        unsubs.push(db.collection("users").onSnapshot(snap => {
+            usersData = []; snap.forEach(d => usersData.push({ id: d.id, ...d.data() }));
+            renderUsers();
+        }, err => console.warn(err.message)));
+        unsubs.push(db.collection("admins").onSnapshot(snap => {
+            adminIds = new Set(); adminDocs = {}; snap.forEach(d => { adminIds.add(d.id); adminDocs[d.id] = d.data(); });
+            renderUsers();
+        }, err => console.warn(err.message)));
+    }
+
+    function renderUsers() {
+        const e = v => String(v == null ? "" : v).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+        const q = (document.getElementById("userSearch").value || "").toLowerCase().trim();
+        const known = new Set(usersData.map(u => u.id));
+        const extra = [...adminIds].filter(id => !known.has(id)).map(id => ({ id, name: (adminDocs[id] || {}).name || "(added by UID)", email: (adminDocs[id] || {}).email || id }));
+        const list = usersData.concat(extra)
+            .filter(u => !q || [u.name, u.email, u.phone].some(v => String(v || "").toLowerCase().includes(q)))
+            .sort((a, b) => (b.id === OWNER_UID) - (a.id === OWNER_UID) || adminIds.has(b.id) - adminIds.has(a.id) || String(a.name || "").localeCompare(String(b.name || "")));
+        document.getElementById("adminCount").textContent = (adminIds.size + (adminIds.has(OWNER_UID) ? 0 : 1)) + " admin(s) · " + usersData.length + " signed-up client(s)";
+        document.getElementById("usersTable").innerHTML = list.length ? list.map(u => {
+            const owner = u.id === OWNER_UID, admin = owner || adminIds.has(u.id);
+            const status = owner ? '<span class="pill pill-owner">Owner</span>' : admin ? '<span class="pill pill-admin">Admin</span>' : '<span class="pill pill-client">Client</span>';
+            const action = owner ? '' : admin
+                ? `<button class="btn btn-remove" onclick="setAdmin('${u.id}', false)">Remove Admin</button>`
+                : `<button class="btn btn-make" onclick="setAdmin('${u.id}', true)">Make Admin</button>`;
+            return `<tr><td><b>${e(u.name) || "—"}</b></td><td>${e(u.email)}</td><td>${e(u.phone)}</td><td>${status}</td><td>${action}</td></tr>`;
+        }).join("") : '<tr><td colspan="5" style="color:#888;">No clients found.</td></tr>';
+    }
+
+    function formMsg(id, text, ok) { const el = document.getElementById(id); el.textContent = text; el.className = "form-msg " + (ok ? "ok" : "bad"); }
+
+    // Creates the staff account on a second Firebase connection, so the owner stays signed in.
+    async function addAdminManually() {
+        const name = document.getElementById("naName").value.trim();
+        const phone = document.getElementById("naPhone").value.trim();
+        const email = document.getElementById("naEmail").value.trim().toLowerCase();
+        const pass = document.getElementById("naPass").value;
+        if (!name) return formMsg("naMsg", "Enter their full name.");
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return formMsg("naMsg", "Enter a valid email address.");
+        if (pass.length < 6) return formMsg("naMsg", "The password needs at least 6 characters.");
+
+        // Already signed up? Just make them an admin.
+        const existing = usersData.find(u => String(u.email || "").toLowerCase() === email);
+        if (existing) {
+            await db.collection("admins").doc(existing.id).set({ role: "admin", name: existing.name || name, email, addedAt: firebase.firestore.FieldValue.serverTimestamp() });
+            return formMsg("naMsg", `${existing.name || email} already had an account and is now an admin. Their password hasn't changed.`, true);
+        }
+
+        const btn = document.getElementById("naBtn"); btn.disabled = true; formMsg("naMsg", "Creating account…", true);
+        let second;
+        try {
+            second = firebase.apps.find(a => a.name === "staffCreator") || firebase.initializeApp(firebaseConfig, "staffCreator");
+            const cred = await second.auth().createUserWithEmailAndPassword(email, pass);
+            await cred.user.updateProfile({ displayName: name });
+            const uid = cred.user.uid;
+            await second.auth().signOut();
+            await db.collection("users").doc(uid).set({ name, phone, email, createdAt: firebase.firestore.FieldValue.serverTimestamp(), createdByOwner: true });
+            await db.collection("admins").doc(uid).set({ role: "admin", name, email, addedAt: firebase.firestore.FieldValue.serverTimestamp() });
+            formMsg("naMsg", `Done! ${name} is now an admin. They sign in with ${email} and the password you chose.`, true);
+            ["naName", "naPhone", "naEmail", "naPass"].forEach(id => document.getElementById(id).value = "");
+        } catch (err) {
+            const c = err.code || "";
+            formMsg("naMsg", /email-already-in-use/.test(c) ? "This email already has an account. Ask them to sign in on the website once, then tap Make Admin next to their name, or add them by User UID below." :
+                             /weak-password/.test(c) ? "The password needs at least 6 characters." :
+                             /invalid-email/.test(c) ? "Enter a valid email address." :
+                             "Couldn't create the account: " + err.message);
+        }
+        btn.disabled = false;
+    }
+
+    async function addAdminByUid() {
+        const uid = document.getElementById("uidInput").value.trim();
+        const name = document.getElementById("uidName").value.trim();
+        if (!/^[A-Za-z0-9]{20,40}$/.test(uid)) return formMsg("uidMsg", "That doesn't look like a User UID.");
+        if (uid === OWNER_UID) return formMsg("uidMsg", "That's your owner account. It's always an admin.", true);
+        try {
+            const u = usersData.find(x => x.id === uid) || {};
+            await db.collection("admins").doc(uid).set({ role: "admin", name: name || u.name || "", email: u.email || "", addedAt: firebase.firestore.FieldValue.serverTimestamp() });
+            formMsg("uidMsg", "Added as admin.", true);
+            document.getElementById("uidInput").value = ""; document.getElementById("uidName").value = "";
+        } catch (err) { formMsg("uidMsg", "Couldn't add: " + err.message); }
+    }
+
+    async function setAdmin(uid, make) {
+        const u = usersData.find(x => x.id === uid) || {};
+        const who = u.name || u.email || uid;
+        if (!confirm(make ? `Give ${who} admin access to this dashboard?` : `Remove admin access from ${who}?`)) return;
+        try {
+            if (make) await db.collection("admins").doc(uid).set({ role: "admin", name: u.name || "", email: u.email || "", addedAt: firebase.firestore.FieldValue.serverTimestamp() });
+            else await db.collection("admins").doc(uid).delete();
+        } catch (err) { alert("Couldn't update admin access: " + err.message); }
+    }
+
+    // South African number -> international format for WhatsApp (0637571971 -> 27637571971)
+    function intlNumber(raw) {
+        let n = String(raw || "").replace(/\D/g, "");
+        if (n.startsWith("00")) n = n.slice(2);
+        if (n.startsWith("0") && n.length === 10) n = "27" + n.slice(1);
+        if (n.length === 9 && /^[6-8]/.test(n)) n = "27" + n;
+        return n;
+    }
+    function contactCell(d, style) {
+        // values are already HTML-escaped by the caller
+        const phone = d.customerPhone || "";
+        const intl = intlNumber(phone.replace(/&amp;/g, "&"));
+        const email = d.userEmail ? String(d.userEmail).replace(/</g, "&lt;") : "";
+        if (!intl) return `<span style="color:#888">No number</span>${email ? `<small>${email}</small>` : ""}`;
+        const plainStyle = style.replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"');
+        const plainName = String(d.customerName || "").replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"');
+        const when = [d.bookingDate, d.bookingTime].filter(Boolean).join(" at ").replace(/&amp;/g, "&");
+        const msg = `Hi ${plainName.split(" ")[0] || ""}, this is Mbali's Beauty Salon. ` +
+            `We received your booking${d.reference ? " " + d.reference.replace(/&amp;/g, "&") : ""} for ${plainStyle}${when ? " on " + when : ""}, ` +
+            `but we haven't received your WhatsApp confirmation yet. Please reply YES to confirm your appointment. Thank you!`;
+        return `<a class="num" href="tel:+${intl}">${phone}</a>` +
+            (email ? `<small>${email}</small>` : "") +
+            `<div class="contact-actions">` +
+            `<a class="btn-call" href="tel:+${intl}">📞 Call</a>` +
+            `<a class="btn-wa" href="https://wa.me/${intl}?text=${encodeURIComponent(msg)}" target="_blank" rel="noopener">WhatsApp</a>` +
+            `</div>`;
+    }
+
+    function initRealtime() {
+        unsubs.forEach(u => u()); unsubs = [];
+        unsubs.push(db.collection("bookings").orderBy("timestamp", "desc").onSnapshot(snap => {
+            let html = "";
+            snap.forEach(doc => {
+                const d = doc.data();
+                const e = v => String(v == null ? "" : v).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+                d.customerName = e(d.customerName); d.customerPhone = e(d.customerPhone); d.reference = e(d.reference);
+                d.bookingDate = e(d.bookingDate); d.bookingTime = e(d.bookingTime); d.total = e(d.total);
+                if (d.styles) d.styles = d.styles.map(s => ({ ...s, name: e(s.name) }));
+                const style = (d.styles && d.styles.length > 0) ? d.styles.map(s => s.name).join(", ") : "N/A";
+                html += `<tr><td><b>${d.customerName}</b></td><td class="contact-cell">${contactCell(d, style)}</td><td>${style}${d.reference ? '<br><small style="color:#888">' + d.reference + '</small>' : ''}</td><td>${d.bookingDate || ''} ${d.bookingTime || ''}</td><td>R${d.total}</td>
+                <td><button class="btn btn-confirm" onclick="confirmBooking('${doc.id}')">Confirm Made</button>
+                <button class="btn btn-cancel" onclick="cancelBooking('${doc.id}')">Cancel</button></td></tr>`;
+            });
+            document.getElementById("bookingTable").innerHTML = html;
+        }, err => console.warn(err.message)));
+
+        unsubs.push(db.collection("actual_sales").onSnapshot(snap => {
+            const now = new Date();
+            const todayStr = now.toISOString().split('T')[0];
+            const weekSales = [0,0,0,0,0,0,0];
+            const yearSales = Array(12).fill(0);
+            const styleMap = {};
+            let dayTotal = 0, weekTotal = 0, monthTotal = 0;
+
+            snap.forEach(doc => {
+                const d = doc.data();
+                const dDate = new Date(d.date);
+                const amt = Number(d.total) || 0;
+                styleMap[d.style] = (styleMap[d.style] || 0) + 1;
+
+                // Daily Revenue
+                if(d.date === todayStr) dayTotal += amt;
+
+                // Monthly Revenue
+                if(dDate.getFullYear() === now.getFullYear()) {
+                    yearSales[dDate.getMonth()] += amt;
+                    if(dDate.getMonth() === now.getMonth()) monthTotal += amt;
+                }
+
+                // Weekly Revenue
+                const startOfWeek = new Date(now);
+                startOfWeek.setDate(now.getDate() - (now.getDay() === 0 ? 6 : now.getDay() - 1));
+                startOfWeek.setHours(0,0,0,0);
+
+                if(dDate >= startOfWeek) {
+                    weekTotal += amt;
+                    let dayIndex = dDate.getDay() - 1; 
+                    if (dayIndex === -1) dayIndex = 6; 
+                    weekSales[dayIndex] += amt;
+                }
+            });
+
+            document.getElementById("dayRev").innerText = "R" + dayTotal;
+            document.getElementById("weekRev").innerText = "R" + weekTotal;
+            document.getElementById("monthRev").innerText = "R" + monthTotal;
+            updateCharts(weekSales, yearSales, styleMap);
+        }, err => console.warn(err.message)));
+    }
+
+    function updateCharts(weekData, yearData, styleMap) {
+        const opt = { maintainAspectRatio: false, plugins: { legend: { display: false } } };
+        if(cWeek) cWeek.destroy();
+        cWeek = new Chart(document.getElementById('chartWeek'), {
+            type: 'bar',
+            data: { labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'], datasets: [{ data: weekData, backgroundColor: '#ff3385' }] },
+            options: { ...opt, plugins: { title: { display: true, text: 'WEEKLY PERFORMANCE' } } }
+        });
+        if(cYear) cYear.destroy();
+        cYear = new Chart(document.getElementById('chartYear'), {
+            type: 'line',
+            data: { labels: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'], datasets: [{ data: yearData, borderColor: '#333', fill: true, tension: 0.3 }] },
+            options: { ...opt, plugins: { title: { display: true, text: 'MONTHLY TREND' } } }
+        });
+        if(cStyle) cStyle.destroy();
+        cStyle = new Chart(document.getElementById('chartStyle'), {
+            type: 'doughnut',
+            data: { labels: Object.keys(styleMap), datasets: [{ data: Object.values(styleMap), backgroundColor: ['#ff3385','#333','#ffb3d1','#666'] }] },
+            options: { ...opt, plugins: { legend: { display: true, position: 'bottom' }, title: { display: true, text: 'STYLE POPULARITY' } } }
+        });
+    }
+
+    async function confirmBooking(id) {
+        try {
+            const snap = await db.collection("bookings").doc(id).get();
+            const data = snap.data();
+            await db.collection("actual_sales").add({
+                customerName: data.customerName,
+                style: (data.styles && data.styles.length > 0) ? data.styles[0].name : "Booking",
+                total: Number(data.total),
+                date: new Date().toISOString().split('T')[0],
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            });
+            await db.collection("bookings").doc(id).delete();
+        } catch (e) { alert(e.message); }
+    }
+
+    async function cancelBooking(id) {
+        if(confirm("Cancel this booking?")) await db.collection("bookings").doc(id).delete();
+    }
+
+    async function saveManualWork() {
+        const name = document.getElementById("wName").value;
+        const styleSelect = document.getElementById("wStyle");
+        const price = styleSelect.value;
+        const styleName = styleSelect.options[styleSelect.selectedIndex].text;
+        const date = document.getElementById("wDate").value;
+        const time = document.getElementById("wTime").value;
+
+        if(!name || price == "0" || !date || !time) return alert("Fill all fields");
+
+        try {
+            await db.collection("actual_sales").add({
+                customerName: name,
+                style: styleName.split(' - ')[0],
+                total: Number(price),
+                date: date,
+                timeArrived: time,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            });
+            closeModal();
+        } catch (e) { alert("Error: " + e.message); }
+    }
+
+    function openModal() { 
+        document.getElementById("workModal").style.display="block"; 
+        document.getElementById("wDate").value = new Date().toISOString().split('T')[0];
+        document.getElementById("wTime").value = new Date().toTimeString().slice(0,5);
+    }
+    function closeModal() { 
+        document.getElementById("workModal").style.display="none"; 
+        document.getElementById("wName").value = "";
+    }
+</script>
+</body>
+</html>
